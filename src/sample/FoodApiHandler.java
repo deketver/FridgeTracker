@@ -32,8 +32,8 @@ public class FoodApiHandler
             {
                 String temp = scanner.nextLine();
 
-                Pattern category_pattern = Pattern.compile("categories\":\"([A-Z,a-z ]*)");
-                Pattern name_pattern = Pattern.compile("product_name\":\"([A-Z,a-z ]*)");
+                Pattern category_pattern = Pattern.compile("categories\":\"([A-Z,a-zěščřžýáíéúů: -]*)");
+                Pattern name_pattern = Pattern.compile("product_name\":\"([A-Z,a-z-ěščřžýáíéúů ]*)");
 
                 Matcher category_matcher = category_pattern.matcher(temp);
                 Matcher name_matcher = name_pattern.matcher(temp);

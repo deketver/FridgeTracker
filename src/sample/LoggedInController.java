@@ -49,14 +49,14 @@ public class LoggedInController implements Initializable
             public void handle(ActionEvent actionEvent)
             {
                 Pattern pattern = Pattern.compile("^[0-9]*$");
-                Pattern date_pattern = Pattern.compile("^[0-9]{2}-[0-9]{2}-[0-9]{2}]");
+                Pattern date_pattern = Pattern.compile("^[0-9]{2}-[0-9]{2}-[0-9]{2}");
                 Matcher matcher = pattern.matcher(tf_barcode.getText());
                 Matcher matcher_date = date_pattern.matcher(tf_expiration.getText());
                 boolean matchFound = matcher.find();
                 boolean matchFoundDate = matcher_date.find();
-                if(matchFound)
+                if(matchFound && matchFoundDate)
                 {
-                    System.out.println(matchFoundDate);
+                    //System.out.println(matchFoundDate);
                     System.out.println("Match found for:"+ tf_barcode.getText() + " and date " + tf_expiration.getText());
                     FoodApiHandler data_getter = new FoodApiHandler(tf_barcode.getText());
                     try {

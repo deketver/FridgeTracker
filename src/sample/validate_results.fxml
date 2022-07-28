@@ -46,7 +46,7 @@
                   <Font size="24.0" />
                </font>
             </Label>
-            <TextField fx:id="tf_product_name" editable="false" layoutX="675.0" layoutY="182.0">
+            <TextField fx:id="tf_product_name" editable="false" layoutX="675.0" layoutY="182.0" maxWidth="1.7976931348623157E308">
                <font>
                   <Font size="14.0" />
                </font>

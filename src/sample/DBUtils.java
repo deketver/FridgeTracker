@@ -197,4 +197,9 @@ public class DBUtils
         }
     }
 
+    public static void saveProductData(String user, Integer barcode, String product_name, String category, String expiration_date, Integer number_items)
+    {
+
+    }
+
 }
