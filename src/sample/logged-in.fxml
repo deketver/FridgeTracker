@@ -10,52 +10,56 @@
 <?import javafx.scene.text.Font?>
 
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.LoggedInController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.LoggedInController">
    <children>
-      <AnchorPane prefHeight="57.0" prefWidth="600.0" style="-fx-background-color: #FAE5D3;">
+      <AnchorPane prefHeight="170.0" prefWidth="1280.0" style="-fx-background-color: #FAE5D3;">
          <children>
-            <Label layoutX="35.0" layoutY="12.0" text="Fridge Storage Viewer">
+            <Label layoutX="34.0" layoutY="15.0" text="Fridge Storage Viewer">
+               <font>
+                  <Font size="48.0" />
+               </font>
+            </Label>
+            <Button fx:id="btn_logout" layoutX="1117.0" layoutY="24.0" mnemonicParsing="false" text="Logout">
                <font>
                   <Font size="24.0" />
                </font>
-            </Label>
-            <Button fx:id="btn_logout" layoutX="509.0" layoutY="17.0" mnemonicParsing="false" text="Logout" />
+            </Button>
          </children>
       </AnchorPane>
-      <TabPane prefHeight="332.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane prefHeight="778.0" prefWidth="1280.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab fx:id="view_existing" text="View existing items">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
             </content>
           </Tab>
-          <Tab fx:id="add_new_barcode" text="Barcode - new items">
+          <Tab fx:id="add_new_barcode" style="font-size: 14px;" text="Barcode - new items">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="351.0" prefWidth="1280.0">
                      <children>
-                        <Label layoutX="40.0" layoutY="49.0" text="Product Barcode">
+                        <Label layoutX="143.0" layoutY="211.0" text="Product Barcode">
                            <font>
-                              <Font size="18.0" />
+                              <Font size="36.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="tf_barcode" layoutX="325.0" layoutY="48.0" promptText="Barcode">
+                        <TextField fx:id="tf_barcode" layoutX="758.0" layoutY="206.0" promptText="Barcode">
                            <font>
-                              <Font size="14.0" />
+                              <Font size="24.0" />
                            </font>
                         </TextField>
-                        <Button fx:id="btn_search_item" layoutX="243.0" layoutY="208.0" mnemonicParsing="false" style="-fx-background-color: #A3E4D7;" text="Search Item">
+                        <Button fx:id="btn_search_item" layoutX="522.0" layoutY="539.0" mnemonicParsing="false" style="-fx-background-color: #A3E4D7;" text="Search Item">
                            <font>
-                              <Font size="14.0" />
+                              <Font size="36.0" />
                            </font>
                         </Button>
-                        <Label layoutX="40.0" layoutY="119.0" text="Expiration date DD-MM-YY">
+                        <Label layoutX="143.0" layoutY="316.0" text="Expiration date DD-MM-YY">
                            <font>
-                              <Font size="18.0" />
+                              <Font size="36.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="tf_expiration" layoutX="325.0" layoutY="116.0" promptText="Expiration date">
+                        <TextField fx:id="tf_expiration" layoutX="757.0" layoutY="313.0" promptText="Expiration date">
                            <font>
-                              <Font size="14.0" />
+                              <Font size="24.0" />
                            </font>
                         </TextField>
                      </children>

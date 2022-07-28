@@ -11,63 +11,79 @@
 <?import javafx.scene.text.Font?>
 
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.SignUpController">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.SignUpController">
    <children>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #FAE5D3;">
+      <AnchorPane prefHeight="800.0" prefWidth="290.0" style="-fx-background-color: #FAE5D3;">
          <children>
-            <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="25.0" layoutY="66.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="242.0" fitWidth="281.0" layoutX="25.0" layoutY="279.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../icecream.png" />
                </image>
             </ImageView>
          </children>
       </AnchorPane>
-      <AnchorPane prefHeight="400.0" prefWidth="401.0">
+      <AnchorPane prefHeight="800.0" prefWidth="1080.0">
          <children>
-            <Label layoutX="35.0" layoutY="43.0" text="Fridge Storage Viewer">
+            <Label layoutX="63.0" layoutY="46.0" text="Fridge Storage Viewer">
+               <font>
+                  <Font size="48.0" />
+               </font>
+            </Label>
+            <Label layoutX="169.0" layoutY="191.0" text="Username">
+               <font>
+                  <Font size="36.0" />
+               </font>
+            </Label>
+            <Label layoutX="172.0" layoutY="379.0" text="Password">
+               <font>
+                  <Font size="36.0" />
+               </font>
+            </Label>
+            <TextField fx:id="tf_username" layoutX="558.0" layoutY="184.0" promptText="Username">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </TextField>
+            <Button fx:id="btn_create_account" layoutX="339.0" layoutY="585.0" mnemonicParsing="false" style="-fx-background-color: #A3E4D7;" text="Create account">
+               <font>
+                  <Font size="36.0" />
+               </font>
+            </Button>
+            <Label layoutX="171.0" layoutY="288.0" text="E-mail Address">
+               <font>
+                  <Font size="36.0" />
+               </font>
+            </Label>
+            <TextField fx:id="tf_mail" layoutX="559.0" layoutY="281.0" promptText="E-mail">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </TextField>
+            <Label layoutX="260.0" layoutY="723.0" text="Already have an account?">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
-            <Label layoutX="48.0" layoutY="101.0" text="Username">
+            <Button fx:id="btn_login" layoutX="580.0" layoutY="711.0" mnemonicParsing="false" text="Login">
                <font>
-                  <Font size="18.0" />
-               </font>
-            </Label>
-            <Label layoutX="49.0" layoutY="192.0" text="Password">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Label>
-            <TextField fx:id="tf_username" layoutX="189.0" layoutY="101.0" promptText="Username" />
-            <Button fx:id="btn_create_account" layoutX="116.0" layoutY="284.0" mnemonicParsing="false" style="-fx-background-color: #A3E4D7;" text="Create account">
-               <font>
-                  <Font size="18.0" />
+                  <Font size="24.0" />
                </font>
             </Button>
-            <Label layoutX="48.0" layoutY="147.0" text="E-mail Address">
+            <PasswordField fx:id="ps_first" layoutX="558.0" layoutY="374.0" promptText="Enter password">
                <font>
-                  <Font size="18.0" />
+                  <Font size="24.0" />
+               </font>
+            </PasswordField>
+            <Label layoutX="172.0" layoutY="468.0" text="Password again">
+               <font>
+                  <Font size="36.0" />
                </font>
             </Label>
-            <TextField fx:id="tf_mail" layoutX="188.0" layoutY="146.0" promptText="E-mail" />
-            <Label layoutX="46.0" layoutY="346.0" text="Already have an account?">
+            <PasswordField fx:id="ps_second" layoutX="558.0" layoutY="468.0" promptText="Re-enter password">
                <font>
-                  <Font size="14.0" />
+                  <Font size="24.0" />
                </font>
-            </Label>
-            <Button fx:id="btn_login" layoutX="230.0" layoutY="343.0" mnemonicParsing="false" text="Login">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-            <PasswordField fx:id="ps_first" layoutX="188.0" layoutY="192.0" promptText="Enter password" />
-            <Label layoutX="50.0" layoutY="238.0" text="Password again">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Label>
-            <PasswordField fx:id="ps_second" layoutX="188.0" layoutY="238.0" promptText="Re-enter password" />
+            </PasswordField>
          </children>
       </AnchorPane>
    </children>

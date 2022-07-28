@@ -42,21 +42,45 @@ public class LoggedInController implements Initializable
 
         btn_search_item.setOnAction(new EventHandler<ActionEvent>()
         {
+            String product_name = null;
+            String[] categories = null;
+
             @Override
             public void handle(ActionEvent actionEvent)
             {
                 Pattern pattern = Pattern.compile("^[0-9]*$");
-                Pattern date_pattern = Pattern.compile("^[0-9]{2}-[0-9]{2}-[0-9]{2}$]");
+                Pattern date_pattern = Pattern.compile("^[0-9]{2}-[0-9]{2}-[0-9]{2}]");
                 Matcher matcher = pattern.matcher(tf_barcode.getText());
                 Matcher matcher_date = date_pattern.matcher(tf_expiration.getText());
                 boolean matchFound = matcher.find();
                 boolean matchFoundDate = matcher_date.find();
                 if(matchFound)
                 {
+                    System.out.println(matchFoundDate);
                     System.out.println("Match found for:"+ tf_barcode.getText() + " and date " + tf_expiration.getText());
                     FoodApiHandler data_getter = new FoodApiHandler(tf_barcode.getText());
                     try {
                         data_getter.create_connection();
+                        product_name = data_getter.return_product_name();
+                        categories = data_getter.return_categories();
+                        if(product_name == null)
+                        {
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.setContentText("Product was not found in the database. Insert data manually.");
+                            alert.show();
+                        }
+                        else
+                        {
+                            DBUtils.changeSceneValidate(actionEvent,
+                                    "validate_results.fxml",
+                                    "Check results",
+                                    null,
+                                    tf_barcode.getText(),
+                                    product_name,
+                                    categories,
+                                    tf_expiration.getText());
+                        }
+
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -69,6 +93,8 @@ public class LoggedInController implements Initializable
                     alert.setContentText("Provided inputs are not in correct format.");
                     alert.show();
                 }
+
+
             }
         });
     }

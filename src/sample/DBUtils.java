@@ -45,6 +45,39 @@ public class DBUtils
         stage.show();
     }
 
+    public static void changeSceneValidate(ActionEvent event, String fxmlFile, String title, String username, String barcode, String product_name, String[] categories, String expiration_date)
+    {
+        Parent root = null;
+
+        if (product_name != null)
+        {
+            try {
+                FXMLLoader loader = new FXMLLoader(DBUtils.class.getResource(fxmlFile));
+                root = loader.load();
+                ResultsController resultsController = loader.getController();
+                resultsController.setUserInformation(barcode, product_name, categories,expiration_date);
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else
+        {
+            try
+            {
+                root = FXMLLoader.load(DBUtils.class.getResource(fxmlFile));
+            }
+            catch(IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        Stage stage = (Stage)((Node) event.getSource()).getScene().getWindow();
+        stage.setTitle(title);
+        stage.setScene(new Scene(root));
+        stage.show();
+    }
+
     public static void signUpUser(ActionEvent event, String username, String password, String email)
     {
         Connection connection = null;
@@ -163,4 +196,5 @@ public class DBUtils
             }
         }
     }
+
 }
