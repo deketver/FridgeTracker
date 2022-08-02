@@ -1,5 +1,7 @@
 package sample;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -13,16 +15,19 @@ import java.sql.*;
 
 public class DBUtils
 {
+
     public static void changeScene(ActionEvent event, String fxmlFile, String title, String username)
     {
         Parent root = null;
 
         if (username != null)
         {
+            System.out.println(username);
             try {
                 FXMLLoader loader = new FXMLLoader(DBUtils.class.getResource(fxmlFile));
                 root = loader.load();
                 LoggedInController loggedInController = loader.getController();
+                loggedInController.setUserInformation(username);
             }
             catch (IOException e) {
                 e.printStackTrace();
@@ -55,7 +60,7 @@ public class DBUtils
                 FXMLLoader loader = new FXMLLoader(DBUtils.class.getResource(fxmlFile));
                 root = loader.load();
                 ResultsController resultsController = loader.getController();
-                resultsController.setUserInformation(barcode, product_name, categories,expiration_date);
+                resultsController.setUserInformation(username, barcode, product_name, categories,expiration_date);
             }
             catch (IOException e) {
                 e.printStackTrace();
@@ -108,9 +113,8 @@ public class DBUtils
                 psInsert.setString(3, email);
                 psInsert.executeUpdate();
 
-                System.out.println("Here ok 1");
                 changeScene(event, "logged-in.fxml", "Welcome", username);
-                System.out.println("Here ok 2");
+
             }
         }
         catch(SQLException e)
@@ -197,9 +201,98 @@ public class DBUtils
         }
     }
 
-    public static void saveProductData(String user, Integer barcode, String product_name, String category, String expiration_date, Integer number_items)
+    public static void saveProductData(ActionEvent event, String user, String barcode, String product_name, String category, String expiration_date, Integer number_items)
     {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
 
+        try
+        {
+            connection = DriverManager.getConnection("jdbc:sqlite:C:/Users/veron/Documents/FJFI/BS3/JAVA/fridge_fx/fridge_java.db");
+            preparedStatement = connection.prepareStatement("SELECT numer_items, deleted from fridge_records WHERE user = ? and barcode = ? and category = ? and expiration_date = ? and deleted = ?");
+            preparedStatement.setString(1, user);
+            preparedStatement.setString(2, barcode);
+            preparedStatement.setString(3, user);
+            preparedStatement.setString(4, expiration_date);
+            preparedStatement.setString(5, "0");
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.isBeforeFirst())
+            {
+                //record for this user, barcode and date already exists
+                System.out.println("Record already exists");
+
+                while(resultSet.next())
+                {
+                    String retrivedResult = resultSet.getString("numer_items"); //vraci hodnotu pro sloupecek numer_items
+                    Integer available_items = Integer.parseInt(retrivedResult);
+                    available_items += 1;
+
+                    PreparedStatement alterStatement = connection.prepareStatement("UPDATE fridge_records " +
+                            "SET numer_items = ? WHERE user = ? and barcode = ? and category = ? and expiration_date = ? ");
+                    alterStatement.setString(1, available_items.toString());
+                    alterStatement.setString(2, user);
+                    alterStatement.setString(3, barcode);
+                    alterStatement.setString(4, category);
+                    alterStatement.setString(5, expiration_date);
+                    alterStatement.executeUpdate();
+
+                    changeScene(event, "logged-in.fxml", "Welcome", user);
+                }
+            }
+            else
+            {
+                PreparedStatement psInsert = connection.prepareStatement("INSERT INTO fridge_records (user, barcode," +
+                        " product_name, category, expiration_date, numer_items, deleted) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                psInsert.setString(1, user);
+                psInsert.setString(2, barcode);
+                psInsert.setString(3, product_name);
+                psInsert.setString(4, category);
+                psInsert.setString(5, expiration_date);
+                psInsert.setString(6, number_items.toString());
+                psInsert.setString(7, "0");
+                psInsert.executeUpdate();
+                changeScene(event, "logged-in.fxml", "Welcome", user);
+            }
+
+        }
+
+        catch (SQLException exception)
+        {
+            exception.printStackTrace();
+        }
+
+    }
+
+    public static ObservableList<FridgeItem> loadUserData(String user)
+    {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        ObservableList<FridgeItem> ItemsList = FXCollections.observableArrayList();
+
+        try
+        {
+            System.out.println(user);
+            connection = DriverManager.getConnection("jdbc:sqlite:C:/Users/veron/Documents/FJFI/BS3/JAVA/fridge_fx/fridge_java.db");
+            preparedStatement = connection.prepareStatement("SELECT * from fridge_records WHERE user = ? and deleted = ?");
+            preparedStatement.setString(1, user);
+            preparedStatement.setString(2, "0");
+            resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next())
+            {
+                ItemsList.add(new FridgeItem(resultSet.getString("user"),resultSet.getString("barcode"),
+                        resultSet.getString("product_name"), resultSet.getString("category"),
+                        resultSet.getString("expiration_date"), Integer.parseInt(resultSet.getString("numer_items"))));
+            }
+        }
+        catch(SQLException exception)
+        {
+            exception.printStackTrace();
+        }
+        return ItemsList;
     }
 
 }

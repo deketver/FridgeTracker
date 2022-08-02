@@ -1,12 +1,13 @@
 package sample;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.IOException;
 import java.net.URL;
@@ -28,9 +29,30 @@ public class LoggedInController implements Initializable
     @FXML
     private TextField tf_expiration;
 
+    @FXML
+    private TableView<FridgeItem> productView;
+
+    @FXML
+    private TableColumn<FridgeItem, String> tab_barcode;
+
+    @FXML
+    private TableColumn<FridgeItem, String> tab_product_name;
+
+    @FXML
+    private TableColumn<FridgeItem, String> tab_category;
+
+    @FXML
+    private TableColumn<FridgeItem, String> tab_expiration_date;
+
+    @FXML
+    private TableColumn<FridgeItem, Integer> tab_num_items;
+
+    private String username;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
     {
+        load_data();
         btn_logout.setOnAction(new EventHandler<ActionEvent>()
         {
             @Override
@@ -74,7 +96,7 @@ public class LoggedInController implements Initializable
                             DBUtils.changeSceneValidate(actionEvent,
                                     "validate_results.fxml",
                                     "Check results",
-                                    null,
+                                    username,
                                     tf_barcode.getText(),
                                     product_name,
                                     categories,
@@ -97,5 +119,23 @@ public class LoggedInController implements Initializable
 
             }
         });
+    }
+    public void setUserInformation(String username)
+    {
+        this.username = username;
+    }
+
+    private void load_data()
+    {
+        tab_barcode.setCellValueFactory(new PropertyValueFactory<>("barcode"));
+        tab_product_name.setCellValueFactory(new PropertyValueFactory<>("product_name"));
+        tab_category.setCellValueFactory(new PropertyValueFactory<>("category"));
+        tab_expiration_date.setCellValueFactory(new PropertyValueFactory<>("expiration_date"));
+        tab_num_items.setCellValueFactory(new PropertyValueFactory<>("numer_items"));
+
+        ObservableList<FridgeItem> fridge_items = DBUtils.loadUserData(this.username);
+
+        productView.setItems(fridge_items);
+
     }
 }

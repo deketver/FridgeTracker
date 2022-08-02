@@ -4,22 +4,23 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.LoggedInController">
    <children>
-      <AnchorPane prefHeight="170.0" prefWidth="1280.0" style="-fx-background-color: #FAE5D3;">
+      <AnchorPane prefHeight="190.0" prefWidth="1280.0" style="-fx-background-color: #FAE5D3;">
          <children>
-            <Label layoutX="34.0" layoutY="15.0" text="Fridge Storage Viewer">
+            <Label layoutX="34.0" layoutY="20.0" text="Fridge Storage Viewer">
                <font>
                   <Font size="48.0" />
                </font>
             </Label>
-            <Button fx:id="btn_logout" layoutX="1117.0" layoutY="24.0" mnemonicParsing="false" text="Logout">
+            <Button fx:id="btn_logout" layoutX="1118.0" layoutY="30.0" mnemonicParsing="false" text="Logout">
                <font>
                   <Font size="24.0" />
                </font>
@@ -30,7 +31,18 @@
         <tabs>
           <Tab fx:id="view_existing" text="View existing items">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="productView" layoutX="76.0" layoutY="49.0" prefHeight="575.0" prefWidth="1134.0">
+                          <columns>
+                            <TableColumn fx:id="tab_barcode" prefWidth="220.0" text="Barcode" />
+                            <TableColumn fx:id="tab_product_name" prefWidth="319.0" text="Product Name" />
+                              <TableColumn fx:id="tab_category" prefWidth="289.0" text="Category" />
+                              <TableColumn fx:id="tab_expiration_date" prefWidth="165.0" text="Expiaration Date" />
+                              <TableColumn fx:id="tab_num_items" prefWidth="139.0" text="Number of Items" />
+                          </columns>
+                        </TableView>
+                     </children></AnchorPane>
             </content>
           </Tab>
           <Tab fx:id="add_new_barcode" style="font-size: 14px;" text="Barcode - new items">
@@ -47,7 +59,7 @@
                               <Font size="24.0" />
                            </font>
                         </TextField>
-                        <Button fx:id="btn_search_item" layoutX="522.0" layoutY="539.0" mnemonicParsing="false" style="-fx-background-color: #A3E4D7;" text="Search Item">
+                        <Button fx:id="btn_search_item" layoutX="522.0" layoutY="510.0" mnemonicParsing="false" style="-fx-background-color: #A3E4D7;" text="Search Item">
                            <font>
                               <Font size="36.0" />
                            </font>

@@ -38,6 +38,8 @@ public class ResultsController implements Initializable
     @FXML
     private Button btn_logout;
 
+    private String username = null;
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
@@ -56,7 +58,7 @@ public class ResultsController implements Initializable
             @Override
             public void handle(ActionEvent actionEvent)
             {
-                DBUtils.changeScene(actionEvent, "logged-in.fxml", "Welcome", null);
+                DBUtils.changeScene(actionEvent, "logged-in.fxml", "Welcome", username);
             }
         });
 
@@ -65,15 +67,15 @@ public class ResultsController implements Initializable
             @Override
             public void handle(ActionEvent actionEvent)
             {
-
-                DBUtils.saveProductData(null, l_barcodenum.getText(), );
+                DBUtils.saveProductData(actionEvent, username, l_barcodenum.getText(),tf_product_name.getText(), choice_category.getValue(), l_expiration_date.getText(), num_items.getValue() );
             }
         });
 
     }
 
-    public void setUserInformation(String barcode, String product_name, String[] categories, String expiration_date)
+    public void setUserInformation(String username, String barcode, String product_name, String[] categories, String expiration_date)
     {
+        this.username = username;
         l_barcodenum.setText(barcode);
         tf_product_name.setText(product_name);
         if(categories != null)

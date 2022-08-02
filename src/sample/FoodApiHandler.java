@@ -28,7 +28,7 @@ public class FoodApiHandler
         if(connection.getResponseCode() == 200)
         {
             Scanner scanner = new Scanner(url.openStream());
-            while(scanner.hasNext())
+            while (scanner.hasNext())
             {
                 String temp = scanner.nextLine();
 
@@ -41,33 +41,43 @@ public class FoodApiHandler
 
                 boolean matchFound = category_matcher.find();
                 boolean nameMatch = name_matcher.find();
-                if(matchFound)
+                if (matchFound)
                 {
                     String unprocesed_categories = category_matcher.group();
                     System.out.println(unprocesed_categories);
-                    try {
+                    try
+                    {
                         String[] split_categories = unprocesed_categories.split("\"");
                         System.out.println(Arrays.toString(split_categories));
-                        categories = split_categories[split_categories.length-1].split(",");
+                        categories = split_categories[split_categories.length - 1].split(",");
                         System.out.println(Arrays.toString(categories));
 
-                    }
-                    catch (Exception e)
+                        Pattern patern_en = Pattern.compile("en:");
+                        for(int i = 0; i < categories.length; i++)
+                        {
+                            Matcher en_matcher = patern_en.matcher(categories[i]);
+                            if(en_matcher.find())
+                            {
+                                String[] splitted_result = categories[i].split(":");
+                                categories[i] = splitted_result[splitted_result.length -1];
+                            }
+                            //categories[i] = categories[i].replaceAll("\\s+","");
+
+                        }
+
+                    } catch (Exception e)
                     {
                         System.out.println(e.getMessage());
                     }
                 }
-                if(nameMatch)
-                {
+                if (nameMatch) {
                     String unprocesed_name = name_matcher.group();
                     System.out.println(unprocesed_name);
                     try {
                         String[] split_product_name = unprocesed_name.split("\"");
-                        product_name = split_product_name[split_product_name.length-1];
+                        product_name = split_product_name[split_product_name.length - 1];
                         System.out.println(product_name);
-                    }
-                    catch( Exception e)
-                    {
+                    } catch (Exception e) {
                         System.out.println(e.getMessage());
 
                     }
@@ -75,7 +85,6 @@ public class FoodApiHandler
                 // System.out.println(connection.getResponseMessage()); result for status 200 is OK
 
             }
-
         }
 
     }
