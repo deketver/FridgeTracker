@@ -19,6 +19,14 @@ public class FridgeItem
         this.numer_items = numer_items;
     }
 
+    FridgeItem(String barcode, String product_name, String category)
+    {
+        this.barcode = barcode;
+        this.product_name = product_name;
+        this.category = category;
+
+    }
+
     public String getUser()
     {
         return user;

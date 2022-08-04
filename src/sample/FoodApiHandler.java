@@ -61,7 +61,7 @@ public class FoodApiHandler
                                 String[] splitted_result = categories[i].split(":");
                                 categories[i] = splitted_result[splitted_result.length -1];
                             }
-                            //categories[i] = categories[i].replaceAll("\\s+","");
+                            categories[i] = categories[i].replaceAll("^\\s+","");
 
                         }
 

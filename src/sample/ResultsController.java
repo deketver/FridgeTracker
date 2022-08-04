@@ -9,6 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
@@ -37,6 +38,9 @@ public class ResultsController implements Initializable
 
     @FXML
     private Button btn_logout;
+
+    @FXML
+    private TextField tf_manual_cat;
 
     private String username = null;
 
@@ -67,7 +71,17 @@ public class ResultsController implements Initializable
             @Override
             public void handle(ActionEvent actionEvent)
             {
-                DBUtils.saveProductData(actionEvent, username, l_barcodenum.getText(),tf_product_name.getText(), choice_category.getValue(), l_expiration_date.getText(), num_items.getValue() );
+                String choice = null;
+                if(choice_category.getValue().equals("Manual entry"))
+                {
+                    choice = tf_manual_cat.getText();
+                }
+                else
+                {
+                    choice = choice_category.getValue();
+                }
+
+                DBUtils.saveProductData(actionEvent, username, l_barcodenum.getText(),tf_product_name.getText(), choice, l_expiration_date.getText(), num_items.getValue() );
             }
         });
 
@@ -81,11 +95,18 @@ public class ResultsController implements Initializable
         if(categories != null)
         {
         ObservableList<String> observableList = FXCollections.observableList(Arrays.asList(categories));
+        //observableList.add("Manual entry");
         choice_category.setItems(observableList);
         choice_category.setValue(categories[0]);
         }
         else {
-            choice_category.setValue("None");
+
+            ArrayList<String> possible_values = new ArrayList<String>();
+            possible_values.add("None");
+            possible_values.add("Manual entry");
+            ObservableList<String> observableList = FXCollections.observableList(possible_values);
+            choice_category.setItems(observableList);
+            choice_category.setValue("Manual entry");
         }
 
         var factory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 30, 1);

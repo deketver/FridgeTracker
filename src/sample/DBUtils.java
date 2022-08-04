@@ -22,7 +22,6 @@ public class DBUtils
 
         if (username != null)
         {
-            System.out.println(username);
             try {
                 FXMLLoader loader = new FXMLLoader(DBUtils.class.getResource(fxmlFile));
                 root = loader.load();
@@ -92,7 +91,8 @@ public class DBUtils
 
         try
         {
-            connection = DriverManager.getConnection("jdbc:sqlite:C:/Users/veron/Documents/FJFI/BS3/JAVA/fridge_fx/fridge_java.db");
+            String dir = System.getProperty("user.dir");
+            connection = DriverManager.getConnection("jdbc:sqlite:"+ dir+ "\\fridge_java.db");
             psCheckUserExists = connection.prepareStatement("SELECT * FROM users WHERE username = ?");
             psCheckUserExists.setString(1, username);
             resultSet = psCheckUserExists.executeQuery();
@@ -148,7 +148,8 @@ public class DBUtils
         ResultSet resultSet = null;
         try
         {
-            connection = DriverManager.getConnection("jdbc:sqlite:C:/Users/veron/Documents/FJFI/BS3/JAVA/fridge_fx/fridge_java.db");
+            String dir = System.getProperty("user.dir");
+            connection = DriverManager.getConnection("jdbc:sqlite:"+ dir +"\\fridge_java.db");
             preparedStatement = connection.prepareStatement("SELECT password from users WHERE username = ?");
             preparedStatement.setString(1, username);
             resultSet = preparedStatement.executeQuery();
@@ -209,11 +210,12 @@ public class DBUtils
 
         try
         {
-            connection = DriverManager.getConnection("jdbc:sqlite:C:/Users/veron/Documents/FJFI/BS3/JAVA/fridge_fx/fridge_java.db");
+            String dir = System.getProperty("user.dir");
+            connection = DriverManager.getConnection("jdbc:sqlite:"+ dir +"\\fridge_java.db");
             preparedStatement = connection.prepareStatement("SELECT numer_items, deleted from fridge_records WHERE user = ? and barcode = ? and category = ? and expiration_date = ? and deleted = ?");
             preparedStatement.setString(1, user);
             preparedStatement.setString(2, barcode);
-            preparedStatement.setString(3, user);
+            preparedStatement.setString(3, category);
             preparedStatement.setString(4, expiration_date);
             preparedStatement.setString(5, "0");
             resultSet = preparedStatement.executeQuery();
@@ -226,20 +228,20 @@ public class DBUtils
                 while(resultSet.next())
                 {
                     String retrivedResult = resultSet.getString("numer_items"); //vraci hodnotu pro sloupecek numer_items
-                    Integer available_items = Integer.parseInt(retrivedResult);
-                    available_items += 1;
+                    int available_items = Integer.parseInt(retrivedResult);
+                    available_items = available_items +1;
 
                     PreparedStatement alterStatement = connection.prepareStatement("UPDATE fridge_records " +
                             "SET numer_items = ? WHERE user = ? and barcode = ? and category = ? and expiration_date = ? ");
-                    alterStatement.setString(1, available_items.toString());
+                    alterStatement.setString(1, Integer.toString(available_items));
                     alterStatement.setString(2, user);
                     alterStatement.setString(3, barcode);
                     alterStatement.setString(4, category);
                     alterStatement.setString(5, expiration_date);
                     alterStatement.executeUpdate();
 
-                    changeScene(event, "logged-in.fxml", "Welcome", user);
                 }
+                changeScene(event, "logged-in.fxml", "Welcome", user);
             }
             else
             {
@@ -257,7 +259,6 @@ public class DBUtils
             }
 
         }
-
         catch (SQLException exception)
         {
             exception.printStackTrace();
@@ -265,6 +266,7 @@ public class DBUtils
 
     }
 
+    // loads data for current user available in database
     public static ObservableList<FridgeItem> loadUserData(String user)
     {
         Connection connection = null;
@@ -274,8 +276,12 @@ public class DBUtils
 
         try
         {
-            System.out.println(user);
-            connection = DriverManager.getConnection("jdbc:sqlite:C:/Users/veron/Documents/FJFI/BS3/JAVA/fridge_fx/fridge_java.db");
+            // printing out user
+            //System.out.println(user);
+
+
+            String dir = System.getProperty("user.dir");
+            connection = DriverManager.getConnection("jdbc:sqlite:"+ dir +"\\fridge_java.db");
             preparedStatement = connection.prepareStatement("SELECT * from fridge_records WHERE user = ? and deleted = ?");
             preparedStatement.setString(1, user);
             preparedStatement.setString(2, "0");
@@ -293,6 +299,52 @@ public class DBUtils
             exception.printStackTrace();
         }
         return ItemsList;
+    }
+
+
+    // search history of database records to find a match
+    public static FridgeItem searchInDatabase(String barcode)
+    {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        FridgeItem search_result = null;
+        try
+        {
+            String dir = System.getProperty("user.dir");
+            connection = DriverManager.getConnection("jdbc:sqlite:"+ dir +"\\fridge_java.db");
+            preparedStatement = connection.prepareStatement("Select * from fridge_records where barcode = ? LIMIT 1");
+            preparedStatement.setString(1, barcode);
+            resultSet = preparedStatement.executeQuery();
+
+            if(!resultSet.isBeforeFirst())
+            {
+                // no results available
+                System.out.println("No match found even in the database.");
+
+            }
+            else
+                {
+                while (resultSet.next())
+                {
+                    search_result = new FridgeItem(resultSet.getString("barcode"),
+                            resultSet.getString("product_name"),
+                            resultSet.getString("category"));
+                }
+            }
+        }
+        catch (SQLException exception)
+        {
+            exception.printStackTrace();
+        }
+
+        return search_result;
+    }
+
+
+    public static void printUserDir()
+    {
+        System.out.println(System.getProperty("user.dir"));
     }
 
 }
