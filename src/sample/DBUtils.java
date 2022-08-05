@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -291,7 +292,8 @@ public class DBUtils
             {
                 ItemsList.add(new FridgeItem(resultSet.getString("user"),resultSet.getString("barcode"),
                         resultSet.getString("product_name"), resultSet.getString("category"),
-                        resultSet.getString("expiration_date"), Integer.parseInt(resultSet.getString("numer_items"))));
+                        resultSet.getString("expiration_date"),
+                        Integer.parseInt(resultSet.getString("numer_items")), new Button("Delete")));
             }
         }
         catch(SQLException exception)
@@ -329,7 +331,7 @@ public class DBUtils
                 {
                     search_result = new FridgeItem(resultSet.getString("barcode"),
                             resultSet.getString("product_name"),
-                            resultSet.getString("category"));
+                            resultSet.getString("category"), new Button("Delete"));
                 }
             }
         }

@@ -1,5 +1,7 @@
 package sample;
 
+import javafx.scene.control.Button;
+
 public class FridgeItem
 {
     private String user;
@@ -8,8 +10,10 @@ public class FridgeItem
     private String category;
     private String expiration_date;
     private Integer numer_items;
+    //private Button edit;// = new Button("Edit");
+    private Button delete;
 
-    FridgeItem(String user, String barcode, String product_name, String category, String expiration_date, Integer numer_items)
+    FridgeItem(String user, String barcode, String product_name, String category, String expiration_date, Integer numer_items, Button delete)
     {
         this.user = user;
         this.barcode = barcode;
@@ -17,13 +21,17 @@ public class FridgeItem
         this.category = category;
         this.expiration_date = expiration_date;
         this.numer_items = numer_items;
+        //this.edit = edit;
+        this.delete = delete;
     }
 
-    FridgeItem(String barcode, String product_name, String category)
+    FridgeItem(String barcode, String product_name, String category, Button delete)
     {
         this.barcode = barcode;
         this.product_name = product_name;
         this.category = category;
+        //this.edit = edit;
+        this.delete = delete;
 
     }
 
@@ -85,5 +93,27 @@ public class FridgeItem
     public void setNumer_items(Integer numer_items)
     {
         this.numer_items = numer_items;
+    }
+
+    /*
+    public Button getEdit()
+    {
+        return edit;
+    }
+
+    public void setEdit(Button edit)
+    {
+        this.edit = edit;
+    }
+     */
+
+    public Button getDelete()
+    {
+        return delete;
+    }
+
+    public void setDelete(Button delete)
+    {
+        this.delete = delete;
     }
 }

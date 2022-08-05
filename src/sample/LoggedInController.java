@@ -8,6 +8,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.util.StringConverter;
+import javafx.util.converter.IntegerStringConverter;
 
 import java.io.IOException;
 import java.net.URL;
@@ -47,10 +50,18 @@ public class LoggedInController implements Initializable
     @FXML
     private TableColumn<FridgeItem, Integer> tab_num_items;
 
+    //@FXML
+    //private TableColumn<FridgeItem, Button> tab_edit;
+
+    @FXML
+    private TableColumn<FridgeItem, Button> tab_delete;
+
     @FXML
     private Button bt_delete_expired;
 
     private String username = null;
+
+    ObservableList<FridgeItem> fridge_items;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
@@ -156,6 +167,17 @@ public class LoggedInController implements Initializable
 
             }
         });
+
+       // TablePosition pos = productView.getSelectionModel().getSelectedCells().get(0);
+       // int row = pos.getRow();
+
+// Item here is the table view type:
+         //item = productView.getItems().get(row);
+
+      //  TableColumn col = pos.getTableColumn("");
+
+// this gives the value in the selected cell:
+       // String data = (String) col.getCellObservableValue(item).getValue();
     }
     public void setUserInformation(String username)
     {
@@ -177,10 +199,49 @@ public class LoggedInController implements Initializable
         tab_category.setCellValueFactory(new PropertyValueFactory<>("category"));
         tab_expiration_date.setCellValueFactory(new PropertyValueFactory<>("expiration_date"));
         tab_num_items.setCellValueFactory(new PropertyValueFactory<>("numer_items"));
+        //tab_edit.setCellValueFactory(new PropertyValueFactory<>("edit"));
+        tab_delete.setCellValueFactory(new PropertyValueFactory<>("delete"));
 
-        ObservableList<FridgeItem> fridge_items = DBUtils.loadUserData(username);
+        fridge_items = DBUtils.loadUserData(username);
 
         productView.setItems(fridge_items);
 
+        edit_table_col();
+
+    }
+
+    private void edit_table_col()
+    {
+        /*
+        tab_barcode.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        tab_barcode.setOnEditCommit(e->{e.getTableView().getItems().get(e.getTablePosition().getRow()).setBarcode(e.getNewValue());
+        });
+         */
+
+        tab_category.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        tab_category.setOnEditCommit(e->{e.getTableView().getItems().get(e.getTablePosition().getRow()).setCategory(e.getNewValue());
+        });
+
+        /*
+        tab_product_name.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        tab_product_name.setOnEditCommit(e->{e.getTableView().getItems().get(e.getTablePosition().getRow()).setProduct_name(e.getNewValue());
+        });
+         */
+
+        tab_expiration_date.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        tab_expiration_date.setOnEditCommit(e->{e.getTableView().getItems().get(e.getTablePosition().getRow()).setExpiration_date(e.getNewValue());
+        });
+
+        tab_num_items.setCellFactory(TextFieldTableCell.<FridgeItem, Integer>forTableColumn(new IntegerStringConverter()));
+
+
+        tab_num_items.setOnEditCommit(e->{e.getTableView().getItems().get(e.getTablePosition().getRow()).setExpiration_date(e.getNewValue().toString());
+        });
+
+        productView.setEditable(true);
     }
 }
