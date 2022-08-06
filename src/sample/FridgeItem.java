@@ -25,6 +25,7 @@ public class FridgeItem
         this.delete = delete;
     }
 
+    // this constructor is used only for finding matches in existing database for adding new items
     FridgeItem(String barcode, String product_name, String category, Button delete)
     {
         this.barcode = barcode;
@@ -94,18 +95,6 @@ public class FridgeItem
     {
         this.numer_items = numer_items;
     }
-
-    /*
-    public Button getEdit()
-    {
-        return edit;
-    }
-
-    public void setEdit(Button edit)
-    {
-        this.edit = edit;
-    }
-     */
 
     public Button getDelete()
     {

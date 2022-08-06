@@ -31,7 +31,7 @@
                   <Font size="24.0" />
                </font>
             </Label>
-            <Label fx:id="l_barcodenum" layoutX="675.0" layoutY="106.0" text="Label">
+            <Label fx:id="l_barcodenum" layoutX="630.0" layoutY="106.0" text="Label">
                <font>
                   <Font size="24.0" />
                </font>
@@ -46,24 +46,24 @@
                   <Font size="24.0" />
                </font>
             </Label>
-            <TextField fx:id="tf_product_name" editable="false" layoutX="671.0" layoutY="175.0" maxWidth="1.7976931348623157E308">
+            <TextField fx:id="tf_product_name" editable="false" layoutX="625.0" layoutY="175.0" maxWidth="1.7976931348623157E308">
                <font>
                   <Font size="18.0" />
                </font>
             </TextField>
-            <ChoiceBox fx:id="choice_category" layoutX="675.0" layoutY="256.0" prefWidth="150.0" />
+            <ChoiceBox fx:id="choice_category" layoutX="627.0" layoutY="256.0" prefHeight="30.0" prefWidth="220.0" />
             <Label fx:id="l_barcodenum11" layoutX="391.0" layoutY="330.0" text="Number of items">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
-            <Spinner fx:id="num_items" editable="true" layoutX="676.0" layoutY="335.0" />
+            <Spinner fx:id="num_items" editable="true" layoutX="625.0" layoutY="335.0" prefHeight="30.0" prefWidth="220.0" />
             <Label fx:id="l_barcodenum111" layoutX="391.0" layoutY="415.0" text="Expiration date">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
-            <Label fx:id="l_expiration_date" layoutX="676.0" layoutY="415.0" text="Label">
+            <Label fx:id="l_expiration_date" layoutX="628.0" layoutY="415.0" text="Label">
                <font>
                   <Font size="24.0" />
                </font>
@@ -78,7 +78,7 @@
                   <Font size="24.0" />
                </font>
             </Button>
-            <Label layoutX="868.0" layoutY="255.0" text="manual category:">
+            <Label layoutX="870.0" layoutY="255.0" text="manual category:">
                <font>
                   <Font size="18.0" />
                </font>

@@ -13,10 +13,15 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DBUtils
 {
-
     public static void changeScene(ActionEvent event, String fxmlFile, String title, String username)
     {
         Parent root = null;
@@ -341,6 +346,125 @@ public class DBUtils
         }
 
         return search_result;
+    }
+
+    public static void updateDatabaseRecord(FridgeItem fridgeItem) throws SQLException
+    {
+        if(fridgeItem != null)
+        {
+            Connection connection = null;
+            PreparedStatement preparedStatement = null;
+
+            String expiration_date = fridgeItem.getExpiration_date();
+            int number_items = fridgeItem.getNumer_items();
+            String user = fridgeItem.getUser();
+            String barcode = fridgeItem.getBarcode();
+            String category = fridgeItem.getCategory();
+
+            Pattern date_pattern = Pattern.compile("^[0-9]{2}-[0-9]{2}-[0-9]{2}");
+            Matcher matcher_date = date_pattern.matcher(expiration_date);
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yy", Locale.ENGLISH);
+            LocalDate dateTime = LocalDate.parse(expiration_date, formatter);
+
+            System.out.println("From DBUtils");
+            System.out.println(dateTime);
+            System.out.println(expiration_date);
+            boolean matchFoundDate = matcher_date.find();
+            if(matchFoundDate)
+            {
+                String dir = System.getProperty("user.dir");
+                connection = DriverManager.getConnection("jdbc:sqlite:"+ dir +"\\fridge_java.db");
+                preparedStatement = connection.prepareStatement("UPDATE fridge_records " +
+                        "SET expiration_date = ?, numer_items = ? WHERE user = ? and barcode = ? and category = ? and deleted = ?");
+                preparedStatement.setString(1, expiration_date);
+                preparedStatement.setString(2, Integer.toString(number_items));
+                preparedStatement.setString(3, user);
+                preparedStatement.setString(4, barcode);
+                preparedStatement.setString(5, category);
+                preparedStatement.setString(6, "0");
+                preparedStatement.executeUpdate();
+            }
+            else
+                {
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setContentText("Wrong date format, record not saved.");
+                    alert.show();
+                }
+
+        }
+        else
+        {
+            System.out.println("Fridge item is null");
+        }
+    }
+
+    public static void deleteItem(FridgeItem fridgeItem) throws SQLException
+    {
+        if(fridgeItem != null)
+        {
+            Connection connection = null;
+            PreparedStatement preparedStatement = null;
+
+            String expiration_date = fridgeItem.getExpiration_date();
+            String user = fridgeItem.getUser();
+            String barcode = fridgeItem.getBarcode();
+            String category = fridgeItem.getCategory();
+
+            String dir = System.getProperty("user.dir");
+            connection = DriverManager.getConnection("jdbc:sqlite:" + dir + "\\fridge_java.db");
+            preparedStatement = connection.prepareStatement("UPDATE fridge_records " +
+                    "SET deleted = ? WHERE user = ? and barcode = ? and category = ? and expiration_date = ?");
+            preparedStatement.setString(1, "1");
+            preparedStatement.setString(2, user);
+            preparedStatement.setString(3, barcode);
+            preparedStatement.setString(4, category);
+            preparedStatement.setString(5, expiration_date);
+
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    public static void deleteExpired() throws SQLException
+    {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yy", Locale.ENGLISH);
+        LocalDateTime now = LocalDateTime.now();
+        String today = dtf.format(now);
+        System.out.println("Today is: " + now);
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        String dir = System.getProperty("user.dir");
+        connection = DriverManager.getConnection("jdbc:sqlite:"+ dir +"\\fridge_java.db");
+        preparedStatement = connection.prepareStatement("Select * from fridge_records where expiration_date < ?");
+        preparedStatement.setString(1, today);
+        resultSet = preparedStatement.executeQuery();
+
+        if(!resultSet.isBeforeFirst())
+        {
+            // no results available
+            System.out.println("Nothing to delete.");
+
+
+        }
+        else
+            {
+            while (resultSet.next())
+            {
+                String record_id = resultSet.getString("record_id");
+                PreparedStatement updateStatement = connection.prepareStatement("UPDATE fridge_records " +
+                        "SET deleted = ? WHERE record_id = ?");
+                updateStatement.setString(1, "1");
+                updateStatement.setString(2, record_id);
+                updateStatement.executeUpdate();
+
+            }
+
+        }
+
+
     }
 
 

@@ -14,6 +14,7 @@ import javafx.util.converter.IntegerStringConverter;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -50,9 +51,6 @@ public class LoggedInController implements Initializable
     @FXML
     private TableColumn<FridgeItem, Integer> tab_num_items;
 
-    //@FXML
-    //private TableColumn<FridgeItem, Button> tab_edit;
-
     @FXML
     private TableColumn<FridgeItem, Button> tab_delete;
 
@@ -63,10 +61,36 @@ public class LoggedInController implements Initializable
 
     ObservableList<FridgeItem> fridge_items;
 
+    // manual adding items
+    @FXML
+    private TextField tf_barcode_man;
+
+    @FXML
+    private TextField tf_product_name_man;
+
+    @FXML
+    private ComboBox<String> combo_category_man;
+
+    @FXML
+    private TextField tf_man_category_man;
+
+    @FXML
+    private Spinner<Integer> number_item_man;
+
+    @FXML
+    private TextField tf_expiration_date_man;
+
+    @FXML
+    private Button btn_save;
+
+    @FXML
+    private Button btn_search_barcode;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
     {
         load_data();
+
         btn_logout.setOnAction(new EventHandler<ActionEvent>()
         {
             @Override
@@ -168,16 +192,34 @@ public class LoggedInController implements Initializable
             }
         });
 
-       // TablePosition pos = productView.getSelectionModel().getSelectedCells().get(0);
-       // int row = pos.getRow();
+        bt_delete_expired.setOnAction(new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent actionEvent)
+            {
+                try
+                {
+                    DBUtils.deleteExpired();
+                } catch (SQLException exception)
+                {
+                    exception.printStackTrace();
+                    System.out.println("Not possible to delete results from database");
+                }
+                load_data();
+            }
+        });
 
-// Item here is the table view type:
-         //item = productView.getItems().get(row);
+        btn_save.setOnAction(new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent actionEvent)
+            {
 
-      //  TableColumn col = pos.getTableColumn("");
 
-// this gives the value in the selected cell:
-       // String data = (String) col.getCellObservableValue(item).getValue();
+            }
+        });
+
+
     }
     public void setUserInformation(String username)
     {
@@ -206,6 +248,29 @@ public class LoggedInController implements Initializable
 
         productView.setItems(fridge_items);
 
+        for(FridgeItem item: fridge_items)
+        {
+            Button button = item.getDelete();
+            button.setOnAction(new EventHandler<ActionEvent>()
+            {
+                @Override
+                public void handle(ActionEvent actionEvent)
+                {
+                    try
+                    {
+                        DBUtils.deleteItem(item);
+                        load_data();
+                    } catch (SQLException exception)
+                    {
+                        exception.printStackTrace();
+                        Alert alert = new Alert(Alert.AlertType.WARNING);
+                        alert.setContentText("Item was not possible to delete.");
+                        alert.show();
+                    }
+                }
+            });
+        }
+
         edit_table_col();
 
     }
@@ -219,27 +284,39 @@ public class LoggedInController implements Initializable
         });
          */
 
-        tab_category.setCellFactory(TextFieldTableCell.forTableColumn());
-
-        tab_category.setOnEditCommit(e->{e.getTableView().getItems().get(e.getTablePosition().getRow()).setCategory(e.getNewValue());
-        });
-
-        /*
-        tab_product_name.setCellFactory(TextFieldTableCell.forTableColumn());
-
-        tab_product_name.setOnEditCommit(e->{e.getTableView().getItems().get(e.getTablePosition().getRow()).setProduct_name(e.getNewValue());
-        });
-         */
-
         tab_expiration_date.setCellFactory(TextFieldTableCell.forTableColumn());
 
         tab_expiration_date.setOnEditCommit(e->{e.getTableView().getItems().get(e.getTablePosition().getRow()).setExpiration_date(e.getNewValue());
+            var result = e.getTableView().getItems().get(e.getTablePosition().getRow());
+            try
+            {
+                DBUtils.updateDatabaseRecord(result);
+            }
+            catch (SQLException exception)
+            {
+                exception.printStackTrace();
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setContentText("Item was not updated.");
+                alert.show();
+            }
         });
 
         tab_num_items.setCellFactory(TextFieldTableCell.<FridgeItem, Integer>forTableColumn(new IntegerStringConverter()));
 
 
-        tab_num_items.setOnEditCommit(e->{e.getTableView().getItems().get(e.getTablePosition().getRow()).setExpiration_date(e.getNewValue().toString());
+        tab_num_items.setOnEditCommit(e->{e.getTableView().getItems().get(e.getTablePosition().getRow()).setNumer_items(e.getNewValue());
+            var result = e.getTableView().getItems().get(e.getTablePosition().getRow());
+            try
+            {
+                DBUtils.updateDatabaseRecord(result);
+            }
+            catch (SQLException exception)
+            {
+                exception.printStackTrace();
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setContentText("Item was not updated.");
+                alert.show();
+            }
         });
 
         productView.setEditable(true);
