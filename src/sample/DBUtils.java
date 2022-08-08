@@ -13,9 +13,12 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -120,7 +123,6 @@ public class DBUtils
                 psInsert.executeUpdate();
 
                 changeScene(event, "logged-in.fxml", "Welcome", username);
-
             }
         }
         catch(SQLException e)
@@ -140,11 +142,8 @@ public class DBUtils
                 {
                     System.out.println(e.getMessage());
                 }
-
             }
         }
-
-
     }
 
     public static void logInUser(ActionEvent event, String username, String password)
@@ -213,6 +212,8 @@ public class DBUtils
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
+
+        //need to add input validation here
 
         try
         {
@@ -391,7 +392,6 @@ public class DBUtils
                     alert.setContentText("Wrong date format, record not saved.");
                     alert.show();
                 }
-
         }
         else
         {
@@ -425,12 +425,11 @@ public class DBUtils
         }
     }
 
-    public static void deleteExpired() throws SQLException
+    public static void deleteExpired() throws SQLException, ParseException
     {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yy", Locale.ENGLISH);
-        LocalDateTime now = LocalDateTime.now();
-        String today = dtf.format(now);
-        System.out.println("Today is: " + now);
+        Date now = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yy");
+        System.out.println(formatter.format(now));
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -438,35 +437,64 @@ public class DBUtils
 
         String dir = System.getProperty("user.dir");
         connection = DriverManager.getConnection("jdbc:sqlite:"+ dir +"\\fridge_java.db");
-        preparedStatement = connection.prepareStatement("Select * from fridge_records where expiration_date < ?");
-        preparedStatement.setString(1, today);
+        preparedStatement = connection.prepareStatement("Select * from fridge_records");
         resultSet = preparedStatement.executeQuery();
 
         if(!resultSet.isBeforeFirst())
         {
             // no results available
             System.out.println("Nothing to delete.");
-
-
         }
         else
             {
             while (resultSet.next())
             {
                 String record_id = resultSet.getString("record_id");
-                PreparedStatement updateStatement = connection.prepareStatement("UPDATE fridge_records " +
-                        "SET deleted = ? WHERE record_id = ?");
-                updateStatement.setString(1, "1");
-                updateStatement.setString(2, record_id);
-                updateStatement.executeUpdate();
-
+                String expiration_date = resultSet.getString("expiration_date");
+                Date date = formatter.parse(expiration_date);
+                if(date.compareTo(now) < 0 )
+                {
+                    PreparedStatement updateStatement = connection.prepareStatement("UPDATE fridge_records " +
+                            "SET deleted = ? WHERE record_id = ?");
+                    updateStatement.setString(1, "1");
+                    updateStatement.setString(2, record_id);
+                    updateStatement.executeUpdate();
+                }
             }
-
         }
-
-
     }
 
+    public static String searchName(String product_name) throws SQLException
+    {
+        String barcode = null;
+        String category = null;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        String dir = System.getProperty("user.dir");
+        connection = DriverManager.getConnection("jdbc:sqlite:"+ dir +"\\fridge_java.db");
+        preparedStatement = connection.prepareStatement("Select * from fridge_records where product_name LIKE ? LIMIT 1");
+        preparedStatement.setString(1, product_name);
+        resultSet = preparedStatement.executeQuery();
+
+        if(!resultSet.isBeforeFirst())
+        {
+            // no results available
+            System.out.println("No name match found.");
+        }
+        else
+        {
+            System.out.println("Match with name found.");
+            while (resultSet.next())
+            {
+                barcode = resultSet.getString("barcode");
+
+            }
+        }
+
+        return barcode;
+    }
 
     public static void printUserDir()
     {

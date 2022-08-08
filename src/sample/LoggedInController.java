@@ -10,11 +10,14 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.StringConverter;
+import javafx.stage.FileChooser;
 import javafx.util.converter.IntegerStringConverter;
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -86,10 +89,15 @@ public class LoggedInController implements Initializable
     @FXML
     private Button btn_search_barcode;
 
+    // invoice loader
+    @FXML
+    private ComboBox<String> combo_store_selection;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
     {
         load_data();
+        setCategories();
 
         btn_logout.setOnAction(new EventHandler<ActionEvent>()
         {
@@ -200,7 +208,7 @@ public class LoggedInController implements Initializable
                 try
                 {
                     DBUtils.deleteExpired();
-                } catch (SQLException exception)
+                } catch (SQLException | ParseException exception)
                 {
                     exception.printStackTrace();
                     System.out.println("Not possible to delete results from database");
@@ -214,11 +222,64 @@ public class LoggedInController implements Initializable
             @Override
             public void handle(ActionEvent actionEvent)
             {
+                String choice = null;
+                if(combo_category_man.getValue().equals("Manual entry"))
+                {
+                    choice = tf_man_category_man.getText();
+                }
+                else
+                {
+                    choice = combo_category_man.getValue();
+                }
 
+                if(tf_barcode_man.getText().equals(""));
+                {
 
+                }
+                DBUtils.saveProductData(actionEvent, username, tf_barcode_man.getText(),tf_product_name_man.getText(),
+                        choice, tf_expiration_date_man.getText(), number_item_man.getValue() );
             }
         });
 
+        btn_search_barcode.setOnAction(new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent actionEvent)
+            {
+                String product_name = tf_product_name_man.getText();
+                String barcode;
+                if(product_name.equals(""))
+                {
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setContentText("Product name has to be filled in order to search barcode.");
+                    alert.show();
+                }
+                else
+                    {
+                        try
+                        {
+                            barcode = DBUtils.searchName(product_name);
+                            if(barcode == null)
+                            {
+                                System.out.println("Product not found in database via name");
+                                // try to search on the internet
+
+                                // TBD - problems how to go around Google personalization without API Key
+                            }
+                            else
+                            {
+                                System.out.println("barcode is "+ barcode);
+                                tf_barcode_man.setText(barcode);
+                            }
+                        }
+                        catch(SQLException exception)
+                        {
+                            exception.printStackTrace();
+                        }
+                    }
+
+            }
+        });
 
     }
     public void setUserInformation(String username)
@@ -230,6 +291,32 @@ public class LoggedInController implements Initializable
     public String getUsername()
     {
         return this.username;
+    }
+
+    private void setCategories()
+    {
+        ArrayList<String> possible_values = new ArrayList<String>();
+        possible_values.add("Dairy");
+        possible_values.add("Cheese");
+        possible_values.add("Fruit");
+        possible_values.add("Vegetables");
+        possible_values.add("Ham");
+        possible_values.add("Meat");
+        possible_values.add("Smoked meats");
+        possible_values.add("Drinks");
+        possible_values.add("Juices");
+        possible_values.add("Sauces");
+        possible_values.add("Vegetarian");
+        possible_values.add("Vegan");
+        possible_values.add("Frozen");
+        possible_values.add("Manual entry");
+        ObservableList<String> observableList = FXCollections.observableList(possible_values);
+        combo_category_man.setItems(observableList);
+
+        var factory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 30, 1);
+        factory.setWrapAround(true);
+
+        number_item_man.setValueFactory(factory);
     }
 
     private void load_data()
