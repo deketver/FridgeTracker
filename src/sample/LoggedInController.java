@@ -223,6 +223,7 @@ public class LoggedInController implements Initializable
             public void handle(ActionEvent actionEvent)
             {
                 String choice = null;
+                String barcode = tf_barcode_man.getText();
                 if(combo_category_man.getValue().equals("Manual entry"))
                 {
                     choice = tf_man_category_man.getText();
@@ -232,11 +233,18 @@ public class LoggedInController implements Initializable
                     choice = combo_category_man.getValue();
                 }
 
-                if(tf_barcode_man.getText().equals(""));
+                if(barcode.equals(""))
                 {
-
+                    try
+                    {
+                        barcode = DBUtils.createUniqueBarcode();
+                    }
+                    catch( SQLException exception)
+                    {
+                        exception.printStackTrace();
+                    }
                 }
-                DBUtils.saveProductData(actionEvent, username, tf_barcode_man.getText(),tf_product_name_man.getText(),
+                DBUtils.saveProductData(actionEvent, username, barcode,tf_product_name_man.getText(),
                         choice, tf_expiration_date_man.getText(), number_item_man.getValue() );
             }
         });
@@ -265,6 +273,10 @@ public class LoggedInController implements Initializable
                                 // try to search on the internet
 
                                 // TBD - problems how to go around Google personalization without API Key
+
+                                Alert alert = new Alert(Alert.AlertType.WARNING);
+                                alert.setContentText("Item not found.");
+                                alert.show();
                             }
                             else
                             {

@@ -422,6 +422,8 @@ public class DBUtils
             preparedStatement.setString(5, expiration_date);
 
             preparedStatement.executeUpdate();
+
+            connection.close();
         }
     }
 
@@ -492,8 +494,45 @@ public class DBUtils
 
             }
         }
-
+        connection.close();
         return barcode;
+    }
+
+    public static String createUniqueBarcode() throws SQLException
+    {
+        String unique_barcode = null;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        String dir = System.getProperty("user.dir");
+        connection = DriverManager.getConnection("jdbc:sqlite:"+ dir +"\\fridge_java.db");
+        preparedStatement = connection.prepareStatement("select MIN(barcode) as barcode from fridge_records " +
+                "where length(barcode) < 13");
+        resultSet = preparedStatement.executeQuery();
+        String barcode = resultSet.getString("barcode");
+
+        if(barcode.equals(""))
+        {
+
+            System.out.println("No short barcode found.");
+            unique_barcode = "100000000000";
+        }
+        else
+        {
+            while (resultSet.next())
+            {
+                System.out.println(barcode);
+                long current_value = Long.parseLong(barcode);
+                current_value += 1;
+                unique_barcode = Long.toString(current_value);
+            }
+
+        }
+
+        connection.close();
+
+        return unique_barcode;
     }
 
     public static void printUserDir()
