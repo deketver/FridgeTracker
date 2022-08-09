@@ -20,6 +20,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
@@ -172,7 +173,10 @@ public class LoggedInController implements Initializable
                             if(databaseMatch != null)
                             {
                                 product_name = databaseMatch.getProduct_name();
+                                System.out.println(databaseMatch.getCategory());
+                                categories = new String[1];
                                 categories[0] = databaseMatch.getCategory();
+                                System.out.println(Arrays.toString(categories));
                                 DBUtils.changeSceneValidate(actionEvent,
                                         "validate_results.fxml",
                                         "Check results",
