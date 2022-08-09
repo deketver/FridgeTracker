@@ -10,7 +10,10 @@ def extract_information(pdf_path):
             page = pdf.getPage(part)
             text = page.extractText()
             text_list = text.split("MJ Cena v Kč")
-            to_cut = text_list[1]
+            try:
+                to_cut = text_list[1]
+            except:
+                to_cut = text_list[0]
             values = re.findall(r"([0-9]KS \D*)|([0-9].?[0-9]* KG \D*)", to_cut)
             number_pieces = 0
             only_name = ""

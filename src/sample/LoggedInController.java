@@ -317,6 +317,10 @@ public class LoggedInController implements Initializable
                     System.out.println("File found");
                     System.out.println(f.getAbsolutePath());
                     invoice_items = PDFfileReader.pythonFileProcess(f.getAbsolutePath(), username);
+                    for(FridgeItem item: invoice_items)
+                    {
+                        System.out.println(item.getProduct_name());
+                    }
                 }
             }
         });
@@ -326,7 +330,7 @@ public class LoggedInController implements Initializable
             @Override
             public void handle(ActionEvent actionEvent)
             {
-
+                DBUtils.changeSceneInvoice(actionEvent, "invoice_loaded.fxml", "Choose items to add!", username, invoice_items);
             }
         });
 
@@ -424,12 +428,6 @@ public class LoggedInController implements Initializable
 
     private void edit_table_col()
     {
-        /*
-        tab_barcode.setCellFactory(TextFieldTableCell.forTableColumn());
-
-        tab_barcode.setOnEditCommit(e->{e.getTableView().getItems().get(e.getTablePosition().getRow()).setBarcode(e.getNewValue());
-        });
-         */
 
         tab_expiration_date.setCellFactory(TextFieldTableCell.forTableColumn());
 

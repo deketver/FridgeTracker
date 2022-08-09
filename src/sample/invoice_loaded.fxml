@@ -24,8 +24,16 @@
             </Label>
          </children>
       </AnchorPane>
-      <AnchorPane layoutX="8.0" layoutY="129.0" prefHeight="673.0" prefWidth="1273.0" />
-      <TableView fx:id="viewInvoice" editable="true" layoutX="72.0" layoutY="185.0" prefHeight="554.0" prefWidth="1104.0">
+      <AnchorPane layoutX="8.0" layoutY="129.0" prefHeight="673.0" prefWidth="1273.0">
+         <children>
+            <Button fx:id="btn_back" layoutX="1065.0" layoutY="612.0" maxWidth="180.0" mnemonicParsing="false" text="Back">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Button>
+         </children>
+      </AnchorPane>
+      <TableView fx:id="viewInvoice" editable="true" layoutX="72.0" layoutY="185.0" prefHeight="539.0" prefWidth="1104.0">
          <columns>
             <TableColumn fx:id="tab_barcode" prefWidth="240.0" text="Barcode" />
             <TableColumn fx:id="tab_product_name" prefWidth="304.0" text="Product Name" />
