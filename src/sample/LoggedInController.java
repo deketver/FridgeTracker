@@ -1,5 +1,6 @@
 package sample;
 
+import com.sun.glass.ui.CommonDialogs;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -13,11 +14,13 @@ import javafx.util.StringConverter;
 import javafx.stage.FileChooser;
 import javafx.util.converter.IntegerStringConverter;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -64,6 +67,8 @@ public class LoggedInController implements Initializable
 
     ObservableList<FridgeItem> fridge_items;
 
+    ObservableList<FridgeItem> invoice_items;
+
     // manual adding items
     @FXML
     private TextField tf_barcode_man;
@@ -93,11 +98,18 @@ public class LoggedInController implements Initializable
     @FXML
     private ComboBox<String> combo_store_selection;
 
+    @FXML
+    private Button btn_invoice_upload;
+
+    @FXML
+    private Button btn_choose_file;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
     {
         load_data();
         setCategories();
+        setPossibleStores();
 
         btn_logout.setOnAction(new EventHandler<ActionEvent>()
         {
@@ -289,6 +301,31 @@ public class LoggedInController implements Initializable
                             exception.printStackTrace();
                         }
                     }
+            }
+        });
+
+        btn_choose_file.setOnAction(new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent actionEvent)
+            {
+                FileChooser fc = new FileChooser();
+                fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+                File f = fc.showOpenDialog(null);
+                if(f!=null)
+                {
+                    System.out.println("File found");
+                    System.out.println(f.getAbsolutePath());
+                    invoice_items = PDFfileReader.pythonFileProcess(f.getAbsolutePath(), username);
+                }
+            }
+        });
+
+        btn_invoice_upload.setOnAction(new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent actionEvent)
+            {
 
             }
         });
@@ -303,6 +340,17 @@ public class LoggedInController implements Initializable
     public String getUsername()
     {
         return this.username;
+    }
+
+    private void setPossibleStores()
+    {
+        ArrayList<String> possible_values = new ArrayList<String>();
+        possible_values.add("Košík");
+        possible_values.add("Rohlík");
+
+        ObservableList<String> observableList = FXCollections.observableList(possible_values);
+        combo_store_selection.setItems(observableList);
+
     }
 
     private void setCategories()

@@ -58,6 +58,39 @@ public class DBUtils
         stage.show();
     }
 
+    public static void changeSceneInvoice(ActionEvent event, String fxmlFile, String title, String username, ObservableList<FridgeItem> fridge_items)
+    {
+        Parent root = null;
+
+        if (username != null)
+        {
+            try {
+                FXMLLoader loader = new FXMLLoader(DBUtils.class.getResource(fxmlFile));
+                root = loader.load();
+                InvoiceLoadedController loggedInController = loader.getController();
+                loggedInController.setUserInformation(username, fridge_items);
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else
+        {
+            try
+            {
+                root = FXMLLoader.load(DBUtils.class.getResource(fxmlFile));
+            }
+            catch(IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        Stage stage = (Stage)((Node) event.getSource()).getScene().getWindow();
+        stage.setTitle(title);
+        stage.setScene(new Scene(root));
+        stage.show();
+    }
+
     public static void changeSceneValidate(ActionEvent event, String fxmlFile, String title, String username, String barcode, String product_name, String[] categories, String expiration_date)
     {
         Parent root = null;
