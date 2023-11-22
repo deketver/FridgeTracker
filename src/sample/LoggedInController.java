@@ -13,6 +13,10 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.StringConverter;
 import javafx.stage.FileChooser;
 import javafx.util.converter.IntegerStringConverter;
+import sample.DBUtils;
+import sample.FoodApiHandler;
+import sample.FridgeItem;
+import sample.PDFfileReader;
 
 import java.io.File;
 import java.io.IOException;
