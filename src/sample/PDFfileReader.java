@@ -19,7 +19,7 @@ public class PDFfileReader
         int number_items = 0;
 
         try {
-
+            // In order for the invoice scanner to work, you need to enter local path to your python executable
             ProcessBuilder builder = new ProcessBuilder("C:\\Users\\veron\\AppData\\Local\\Programs\\Python\\Python39\\python.exe", System.getProperty("user.dir") + "\\python_read_file.py", filenamepath);
             Process process = builder.start();
 
